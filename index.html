@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Unconventional Applicant — Your On-Demand Strategic Advisor</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1610;
+    --parchment: #f5f0e8;
+    --warm-mid: #e8dfc8;
+    --accent: #8b4513;
+    --accent-light: #c4783a;
+    --accent-glow: rgba(139,69,19,0.15);
+    --muted: #6b6055;
+    --border: rgba(139,69,19,0.2);
+    --white: #fdfaf4;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background-color: var(--parchment);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background-image: 
+      radial-gradient(ellipse at 20% 50%, rgba(139,69,19,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(196,120,58,0.06) 0%, transparent 50%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  }
+
+  /* ── GATE ── */
+  #gate {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    animation: fadeIn 1s ease;
+  }
+
+  .gate-card { max-width: 480px; width: 100%; text-align: center; }
+
+  .gate-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: slideUp 0.8s ease 0.2s forwards;
+  }
+
+  .gate-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    line-height: 1.1;
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+    opacity: 0;
+    animation: slideUp 0.8s ease 0.4s forwards;
+  }
+
+  .gate-title em { font-style: italic; color: var(--accent); }
+
+  .gate-sub {
+    font-size: 1rem;
+    color: var(--muted);
+    font-weight: 300;
+    line-height: 1.6;
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: slideUp 0.8s ease 0.6s forwards;
+  }
+
+  .gate-divider {
+    width: 3rem; height: 1px;
+    background: var(--accent);
+    margin: 1.5rem auto;
+    opacity: 0;
+    animation: slideUp 0.8s ease 0.5s forwards;
+  }
+
+  .gate-form { opacity: 0; animation: slideUp 0.8s ease 0.8s forwards; }
+
+  .gate-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 0.75rem;
+    text-align: left;
+  }
+
+  .gate-input {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--border);
+    background: var(--white);
+    color: var(--ink);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    border-radius: 2px;
+  }
+
+  .gate-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+
+  .gate-input::placeholder { color: #b0a090; }
+
+  .gate-error {
+    color: #c0392b;
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+    font-family: 'DM Mono', monospace;
+    display: none;
+  }
+
+  .gate-btn {
+    width: 100%;
+    margin-top: 1.25rem;
+    padding: 1rem;
+    background: var(--accent);
+    color: var(--white);
+    border: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    border-radius: 2px;
+  }
+
+  .gate-btn:hover { background: var(--accent-light); }
+  .gate-btn:active { transform: scale(0.99); }
+
+  .gate-note {
+    margin-top: 1.5rem;
+    font-size: 0.72rem;
+    color: var(--muted);
+    line-height: 1.7;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* ── APP ── */
+  #app { display: none; min-height: 100vh; flex-direction: column; }
+
+  header {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(245,240,232,0.95);
+    backdrop-filter: blur(8px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-brand { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--ink); }
+  .header-brand em { color: var(--accent); font-style: italic; }
+  .header-tag { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+
+  /* ── INTRO ── */
+  .intro-panel {
+    max-width: 680px;
+    margin: 3rem auto 0;
+    padding: 0 2rem;
+    animation: fadeIn 0.6s ease;
+  }
+
+  .intro-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+
+  .intro-heading em { color: var(--accent); font-style: italic; }
+
+  .intro-body {
+    font-size: 1rem;
+    line-height: 1.75;
+    color: var(--muted);
+    margin-bottom: 2rem;
+  }
+
+  .prompt-chips { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 2.5rem; }
+
+  .chip {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border);
+    background: var(--white);
+    font-size: 0.78rem;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.18s;
+    border-radius: 2px;
+    line-height: 1.4;
+  }
+
+  .chip:hover { background: var(--accent); color: var(--white); border-color: var(--accent); }
+
+  /* ── CHAT ── */
+  #chat-area { max-width: 680px; margin: 0 auto; padding: 0 2rem 2rem; width: 100%; flex: 1; }
+
+  .messages { display: flex; flex-direction: column; gap: 1.5rem; padding-bottom: 8rem; }
+
+  .msg { display: flex; gap: 1rem; animation: slideUp 0.4s ease; }
+
+  .msg-avatar {
+    width: 2rem; height: 2rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 0.75rem;
+    margin-top: 0.1rem;
+  }
+
+  .msg.advisor .msg-avatar { background: var(--accent); color: var(--white); }
+  .msg.user .msg-avatar { background: var(--warm-mid); color: var(--ink); }
+  .msg.user { flex-direction: row-reverse; }
+
+  .msg-bubble {
+    max-width: 88%;
+    padding: 1rem 1.25rem;
+    border-radius: 2px;
+    line-height: 1.7;
+    font-size: 0.92rem;
+  }
+
+  .msg.advisor .msg-bubble {
+    background: var(--white);
+    border: 1px solid var(--border);
+    color: var(--ink);
+    border-left: 3px solid var(--accent);
+  }
+
+  .msg.user .msg-bubble { background: var(--accent); color: var(--white); }
+  .msg-bubble p { margin-bottom: 0.6rem; }
+  .msg-bubble p:last-child { margin-bottom: 0; }
+
+  .thinking { display: flex; gap: 4px; align-items: center; padding: 0.8rem 1.25rem; }
+
+  .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent-light);
+    animation: bounce 1.2s infinite;
+  }
+
+  .dot:nth-child(2) { animation-delay: 0.2s; }
+  .dot:nth-child(3) { animation-delay: 0.4s; }
+
+  /* ── INPUT BAR ── */
+  .input-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(245,240,232,0.97);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border);
+    padding: 1rem 2rem;
+    z-index: 100;
+  }
+
+  .input-inner { max-width: 680px; margin: 0 auto; display: flex; gap: 0.75rem; align-items: flex-end; }
+
+  .chat-input {
+    flex: 1;
+    padding: 0.85rem 1.1rem;
+    border: 1px solid var(--border);
+    background: var(--white);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    resize: none;
+    min-height: 48px;
+    max-height: 140px;
+    border-radius: 2px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    line-height: 1.5;
+  }
+
+  .chat-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+  .chat-input::placeholder { color: #b0a090; }
+
+  .send-btn {
+    width: 48px; height: 48px;
+    background: var(--accent);
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.18s, transform 0.1s;
+  }
+
+  .send-btn:hover { background: var(--accent-light); }
+  .send-btn:active { transform: scale(0.96); }
+  .send-btn:disabled { background: var(--warm-mid); cursor: not-allowed; }
+  .send-btn svg { width: 18px; height: 18px; fill: none; stroke: white; stroke-width: 2; }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes bounce { 0%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-6px); } }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  @media (max-width: 600px) {
+    header { padding: 1rem; }
+    .intro-panel, #chat-area { padding: 0 1rem; }
+    .input-bar { padding: 0.75rem 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ GATE ══ -->
+<div id="gate">
+  <div class="gate-card">
+    <p class="gate-eyebrow">Private Access</p>
+    <h1 class="gate-title">The <em>Unconventional</em><br>Applicant</h1>
+    <div class="gate-divider"></div>
+    <p class="gate-sub">Your on-demand strategic advisor for the non-linear path to medicine, law, and competitive professional programs.</p>
+    <div class="gate-form">
+      <label class="gate-label" for="pwd">Enter your access code</label>
+      <input class="gate-input" type="password" id="pwd" placeholder="••••••••" autocomplete="off" />
+      <p class="gate-error" id="gate-error">That code doesn't match. Please check your purchase confirmation.</p>
+      <button class="gate-btn" onclick="checkPassword()">Enter →</button>
+      <p class="gate-note">Purchased access is for individual use.<br>Questions? support@unconventionalapplicant.com</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ APP ══ -->
+<div id="app">
+  <header>
+    <span class="header-brand">The <em>Unconventional</em> Applicant</span>
+    <span class="header-tag">On-Demand Advisor</span>
+  </header>
+
+  <div id="main-content">
+    <div class="intro-panel" id="intro">
+      <h2 class="intro-heading">You didn't take<br>the <em>straight line.</em><br>Good.</h2>
+      <p class="intro-body">
+        This is a private thinking space — not a checklist, not a database.
+        Tell me where you are, and I'll help you figure out where you're going
+        and how your path is actually an asset, not a liability.
+      </p>
+      <div class="prompt-chips">
+        <div class="chip" onclick="sendChip(this)">I majored in something "wrong" — am I disqualified?</div>
+        <div class="chip" onclick="sendChip(this)">How do I explain a gap year without apologizing?</div>
+        <div class="chip" onclick="sendChip(this)">I'm 30+ and thinking about a career change. Is it too late?</div>
+        <div class="chip" onclick="sendChip(this)">I don't have a straight-line resume. How do I write my personal statement?</div>
+        <div class="chip" onclick="sendChip(this)">I'm a first-generation student. Where do I even start?</div>
+        <div class="chip" onclick="sendChip(this)">How do I own the "why did you major in X?" interview question?</div>
+      </div>
+    </div>
+
+    <div id="chat-area" style="display:none;">
+      <div class="messages" id="messages"></div>
+    </div>
+  </div>
+
+  <div class="input-bar">
+    <div class="input-inner">
+      <textarea class="chat-input" id="chat-input" placeholder="Tell me where you are. I'll help you figure out where to go." rows="1"></textarea>
+      <button class="send-btn" id="send-btn" onclick="sendMessage()">
+        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── ONLY TWO THINGS YOU NEED TO CHANGE ──
+const ACCESS_CODE = "crooked2024";           // Your password — change this to anything you want
+const SERVER_URL = "YOUR_SERVER_URL_HERE";   // You'll get this after the next setup step
+// ────────────────────────────────────────
+
+let conversationHistory = [];
+let isLoading = false;
+
+function checkPassword() {
+  const val = document.getElementById('pwd').value.trim();
+  const err = document.getElementById('gate-error');
+  if (val === ACCESS_CODE) {
+    document.getElementById('gate').style.display = 'none';
+    const app = document.getElementById('app');
+    app.style.display = 'flex';
+    app.style.flexDirection = 'column';
+  } else {
+    err.style.display = 'block';
+    document.getElementById('pwd').style.borderColor = '#c0392b';
+  }
+}
+
+document.getElementById('pwd').addEventListener('keydown', e => {
+  if (e.key === 'Enter') checkPassword();
+});
+
+function sendChip(el) {
+  document.getElementById('chat-input').value = el.textContent;
+  sendMessage();
+}
+
+async function sendMessage() {
+  if (isLoading) return;
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+
+  document.getElementById('intro').style.display = 'none';
+  document.getElementById('chat-area').style.display = 'block';
+
+  input.value = '';
+  input.style.height = 'auto';
+
+  addMessage('user', text);
+  conversationHistory.push({ role: 'user', content: text });
+
+  isLoading = true;
+  document.getElementById('send-btn').disabled = true;
+
+  const thinkingId = addThinking();
+
+  try {
+    const response = await fetch(`${SERVER_URL}/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: conversationHistory })
+    });
+
+    const data = await response.json();
+    removeThinking(thinkingId);
+
+    const reply = data.reply || "I'm having a moment — try sending that again.";
+    addMessage('advisor', reply);
+    conversationHistory.push({ role: 'assistant', content: reply });
+
+  } catch (err) {
+    removeThinking(thinkingId);
+    addMessage('advisor', "Something went wrong on my end. Give it another try.");
+  }
+
+  isLoading = false;
+  document.getElementById('send-btn').disabled = false;
+  input.focus();
+}
+
+function addMessage(role, text) {
+  const messages = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+  const initial = role === 'advisor' ? 'A' : 'You';
+  const formatted = text.split('\n').filter(l => l.trim()).map(l => `<p>${l}</p>`).join('');
+  div.innerHTML = `<div class="msg-avatar">${initial}</div><div class="msg-bubble">${formatted}</div>`;
+  messages.appendChild(div);
+  div.scrollIntoView({ behavior: 'smooth', block: 'end' });
+}
+
+let thinkingCounter = 0;
+function addThinking() {
+  const id = 'thinking-' + thinkingCounter++;
+  const messages = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'msg advisor';
+  div.id = id;
+  div.innerHTML = `<div class="msg-avatar">A</div><div class="msg-bubble"><div class="thinking"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
+  messages.appendChild(div);
+  div.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  return id;
+}
+
+function removeThinking(id) {
+  const el = document.getElementById(id);
+  if (el) el.remove();
+}
+
+document.getElementById('chat-input').addEventListener('input', function() {
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 140) + 'px';
+});
+
+document.getElementById('chat-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+});
+</script>
+</body>
+</html>
