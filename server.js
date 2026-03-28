@@ -9,7 +9,7 @@ const SYSTEM_PROMPT = `You are The Advisor, a warm, direct, and deeply experienc
 
 Your entire philosophy and framework is drawn from a real person's life: an English major who minored in neuroscience at a small college in rural Ohio, served a year in a faith-based service program before medical school, attended medical school in Boston, completed residency in two cities (Philadelphia and New Haven), did a fellowship in Houston, and ultimately became a double board-certified physician. This person grew up in New York City in the 1980s, attended NYC public schools before transitioning to private school, and was born in Nigeria. They are now a physician, entrepreneur, and parent of three.
 
-This background is your lived framework, not your identity to disclose, but the deep well of experience that makes your advice specific, human, and credible. You don't talk about yourself. You talk about the person in front of you.
+This background is your lived framework, not your identity to disclose, but the deep well of experience that makes your advice specific, human, and credible. You do not talk about yourself. You talk about the person in front of you.
 
 YOUR CORE BELIEFS (never state these as principles, just embody them):
 - The non-linear path is not a liability to explain away. It is a signal of curiosity, resilience, and range.
@@ -22,18 +22,22 @@ HOW YOU SPEAK:
 - Warm but not soft. Honest but not harsh. Direct without being blunt.
 - You use plain language. No jargon, no coaching-speak, no empty affirmations.
 - You never say "Great question!" or "Absolutely!" or "Of course!"
-- Keep responses focused and digestible. Make every sentence earn its place.
-- NEVER use em dashes (the long dash) anywhere in your responses. Use commas, periods, or line breaks instead.
+- Keep responses SHORT. 2 to 4 sentences maximum. Make every sentence earn its place.
+- NEVER use em dashes anywhere in your responses. Use commas or periods instead.
 - NEVER use bullet points or numbered lists. Write in plain conversational paragraphs only.
 
-ITERATIVE CONVERSATION STRUCTURE:
-After every response, end with a short natural transition that offers the user 2 to 3 clear next-step options. Frame these as plain questions or directions, not a menu. They should feel like a natural continuation of the conversation, not a list of choices. For example: "We could work on how to frame this in your personal statement, dig into which programs are the right fit for your background, or talk through how to handle the interview question about your path. Where do you want to go next?" Vary the phrasing every time so it never feels repetitive or robotic.
+RESPONSE FORMAT - THIS IS CRITICAL:
+You must always respond with valid JSON in exactly this structure, with no extra text before or after:
+{"message":"Your short 2-4 sentence response here.","chips":["chip one","chip two","chip three"]}
+
+The message is your core response, short and direct.
+The chips are 2 to 3 short follow-up options the user can tap to continue. Always make one chip exactly "Tell me more." The other chips should be specific next steps relevant to what was just discussed. Keep each chip under 8 words. Vary them every time.
 
 WHAT YOU HELP WITH:
 1. Identity and belonging
 2. Narrative, how to speak about a non-linear path without apologizing
 3. Personal statements for unconventional backgrounds
-4. Interview strategy, owning the "why did you major in X?" question
+4. Interview strategy, owning the why did you major in X question
 5. School and program selection
 6. Timelines, gap years, post-bac, career changes after 30
 7. First-generation and immigrant applicant strategy
@@ -44,9 +48,8 @@ WHAT YOU DO NOT DO:
 - Give GPA or test score cutoffs as gospel
 - Replace formal academic or legal advising
 
-DISCLAIMER: Include this only once, naturally, in your very first message, one sentence noting this is a thinking partnership, not formal advising. Never repeat it.`;
+DISCLAIMER: Include this only once, naturally woven into your very first message field, one sentence noting this is a thinking partnership, not formal advising. Never repeat it.`;
 
-// Serve the full advisor app at root
 app.get('/', (req, res) => {
   res.send(`<!DOCTYPE html>
 <html lang="en">
@@ -99,6 +102,9 @@ app.get('/', (req, res) => {
   .msg.user .msg-bubble{background:var(--accent);color:var(--white)}
   .msg-bubble p{margin-bottom:0.6rem}
   .msg-bubble p:last-child{margin-bottom:0}
+  .response-chips{display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.75rem;margin-left:3rem}
+  .response-chip{padding:0.45rem 0.9rem;border:1px solid var(--border);background:var(--white);font-size:0.75rem;font-family:'DM Sans',sans-serif;color:var(--accent);cursor:pointer;transition:all 0.18s;border-radius:2px;line-height:1.4}
+  .response-chip:hover{background:var(--accent);color:var(--white);border-color:var(--accent)}
   .thinking{display:flex;gap:4px;align-items:center;padding:0.8rem 1.25rem}
   .dot{width:6px;height:6px;border-radius:50%;background:var(--accent-light);animation:bounce 1.2s infinite}
   .dot:nth-child(2){animation-delay:0.2s}
@@ -129,8 +135,8 @@ app.get('/', (req, res) => {
     <div class="gate-form">
       <label class="gate-label" for="pwd">Enter your access code</label>
       <input class="gate-input" type="password" id="pwd" placeholder="••••••••" autocomplete="off"/>
-      <p class="gate-error" id="gate-error">That code doesn't match. Please check your purchase confirmation.</p>
-      <button class="gate-btn" onclick="checkPassword()">Enter →</button>
+      <p class="gate-error" id="gate-error">That code does not match. Please check your purchase confirmation.</p>
+      <button class="gate-btn" onclick="checkPassword()">Enter &rarr;</button>
       <p class="gate-note">Purchased access is for individual use.</p>
     </div>
   </div>
@@ -142,15 +148,15 @@ app.get('/', (req, res) => {
   </header>
   <div id="main-content">
     <div class="intro-panel" id="intro">
-      <h2 class="intro-heading">You didn't take<br>the <em>straight line.</em><br>Good.</h2>
-      <p class="intro-body">This is a private thinking space — not a checklist, not a database. Tell me where you are, and I'll help you figure out where you're going and how your path is actually an asset, not a liability.</p>
+      <h2 class="intro-heading">You did not take<br>the <em>straight line.</em><br>Good.</h2>
+      <p class="intro-body">This is a private thinking space. Tell me where you are, and I will help you figure out where you are going.</p>
       <div class="prompt-chips">
-        <div class="chip" onclick="sendChip(this)">I majored in something "wrong" — am I disqualified?</div>
+        <div class="chip" onclick="sendChip(this)">I majored in something wrong. Am I disqualified?</div>
         <div class="chip" onclick="sendChip(this)">How do I explain a gap year without apologizing?</div>
-        <div class="chip" onclick="sendChip(this)">I'm 30+ and thinking about a career change. Is it too late?</div>
-        <div class="chip" onclick="sendChip(this)">I don't have a straight-line resume. How do I write my personal statement?</div>
-        <div class="chip" onclick="sendChip(this)">I'm a first-generation student. Where do I even start?</div>
-        <div class="chip" onclick="sendChip(this)">How do I own the "why did you major in X?" interview question?</div>
+        <div class="chip" onclick="sendChip(this)">I am 30+ and thinking about a career change. Is it too late?</div>
+        <div class="chip" onclick="sendChip(this)">I do not have a straight-line resume. How do I write my personal statement?</div>
+        <div class="chip" onclick="sendChip(this)">I am a first-generation student. Where do I even start?</div>
+        <div class="chip" onclick="sendChip(this)">How do I own the why did you major in X interview question?</div>
       </div>
     </div>
     <div id="chat-area" style="display:none">
@@ -159,7 +165,7 @@ app.get('/', (req, res) => {
   </div>
   <div class="input-bar">
     <div class="input-inner">
-      <textarea class="chat-input" id="chat-input" placeholder="Tell me where you are. I'll help you figure out where to go." rows="1"></textarea>
+      <textarea class="chat-input" id="chat-input" placeholder="Tell me where you are. I will help you figure out where to go." rows="1"></textarea>
       <button class="send-btn" id="send-btn" onclick="sendMessage()">
         <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
       </button>
@@ -193,7 +199,7 @@ async function sendMessage(){
   document.getElementById('intro').style.display='none';
   document.getElementById('chat-area').style.display='block';
   input.value='';input.style.height='auto';
-  addMessage('user',text);
+  addMessage('user',text,null);
   conversationHistory.push({role:'user',content:text});
   isLoading=true;
   document.getElementById('send-btn').disabled=true;
@@ -202,18 +208,20 @@ async function sendMessage(){
     const response=await fetch('/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:conversationHistory})});
     const data=await response.json();
     removeThinking(thinkingId);
-    const reply=data.reply||"I'm having a moment — try sending that again.";
-    addMessage('advisor',reply);
+    const reply=data.reply||'{"message":"I am having a moment. Try sending that again.","chips":["Try again"]}';
+    let parsed;
+    try{parsed=JSON.parse(reply)}catch(e){parsed={message:reply,chips:["Tell me more"]}}
+    addMessage('advisor',parsed.message,parsed.chips);
     conversationHistory.push({role:'assistant',content:reply});
   } catch(err){
     removeThinking(thinkingId);
-    addMessage('advisor',"Something went wrong on my end. Give it another try.");
+    addMessage('advisor','Something went wrong on my end. Give it another try.',["Try again"]);
   }
   isLoading=false;
   document.getElementById('send-btn').disabled=false;
   input.focus();
 }
-function addMessage(role,text){
+function addMessage(role,text,chips){
   const messages=document.getElementById('messages');
   const div=document.createElement('div');
   div.className='msg '+role;
@@ -221,6 +229,21 @@ function addMessage(role,text){
   const formatted=text.split('\\n').filter(l=>l.trim()).map(l=>'<p>'+l+'</p>').join('');
   div.innerHTML='<div class="msg-avatar">'+initial+'</div><div class="msg-bubble">'+formatted+'</div>';
   messages.appendChild(div);
+  if(chips&&chips.length>0&&role==='advisor'){
+    const chipRow=document.createElement('div');
+    chipRow.className='response-chips';
+    chips.forEach(function(c){
+      const btn=document.createElement('button');
+      btn.className='response-chip';
+      btn.textContent=c;
+      btn.onclick=function(){
+        document.getElementById('chat-input').value=c;
+        sendMessage();
+      };
+      chipRow.appendChild(btn);
+    });
+    messages.appendChild(chipRow);
+  }
   div.scrollIntoView({behavior:'smooth',block:'end'});
 }
 let thinkingCounter=0;
@@ -253,7 +276,7 @@ app.post('/chat', async (req, res) => {
     });
     const data = await response.json();
     if (data.error) return res.status(500).json({ error: data.error.message });
-    res.json({ reply: data.content?.[0]?.text || "Something went wrong. Please try again." });
+    res.json({ reply: data.content?.[0]?.text || '{"message":"Something went wrong. Please try again.","chips":["Try again"]}' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Server error. Please try again.' });
