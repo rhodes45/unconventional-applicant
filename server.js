@@ -23,7 +23,7 @@ HOW YOU SPEAK:
 - You use plain language. No jargon, no coaching-speak, no empty affirmations.
 - You never say "Great question!" or "Absolutely!" or "Of course!"
 - Keep responses SHORT. 2 to 4 sentences maximum. Make every sentence earn its place.
-- NEVER use em dashes anywhere in your responses. Use commas or periods instead.
+- NEVER use em dashes (the character that looks like a long hyphen: —) anywhere in your responses, not even once. This is a hard rule. Use a comma or period instead every single time.
 - NEVER use bullet points or numbered lists. Write in plain conversational paragraphs only.
 
 RESPONSE FORMAT - THIS IS CRITICAL:
@@ -276,7 +276,9 @@ app.post('/chat', async (req, res) => {
     });
     const data = await response.json();
     if (data.error) return res.status(500).json({ error: data.error.message });
-    res.json({ reply: data.content?.[0]?.text || '{"message":"Something went wrong. Please try again.","chips":["Try again"]}' });
+    const rawReply = data.content?.[0]?.text || '{"message":"Something went wrong. Please try again.","chips":["Try again"]}';
+    const cleanReply = rawReply.replace(/—/g, ',').replace(/–/g, ',');
+    res.json({ reply: cleanReply });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Server error. Please try again.' });
